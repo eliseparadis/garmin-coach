@@ -62,12 +62,23 @@ running, lifting — not just power-based cycling TSS. The original methodology 
 prior conversation) called for Strava's Relative Effort score as that cross-activity
 proxy. This skill deliberately avoids that Strava dependency and instead computes an
 HR-based proxy directly from Garmin data: the **Banister TRIMP** (Training Impulse),
-using female-specific coefficients (Morton et al.):
+using sex-specific coefficients (Morton et al.) selected by the `TRIMP_SEX` env var
+(`female` or `male` — see `.env.example`; defaults to `female`):
 
 ```
 HRR = (avg_HR - resting_HR) / (HR_max - resting_HR)     # heart rate reserve, clamped to [0,1]
+
+# TRIMP_SEX=female (default)
 TRIMP = duration_minutes * HRR * 0.86 * e^(1.67 * HRR)
+
+# TRIMP_SEX=male
+TRIMP = duration_minutes * HRR * 0.64 * e^(1.92 * HRR)
 ```
+
+The two coefficient pairs aren't interchangeable — using the wrong one systematically
+skews TRIMP, and since TRIMP feeds ACWR directly, that skews the Low/Medium/High
+injury-risk read too. Set `TRIMP_SEX` correctly for whoever the data belongs to; don't
+leave it on the default without checking.
 
 - `resting_HR` is pulled per-activity-date from Garmin's daily wellness data
   (`get_rhr_day`).

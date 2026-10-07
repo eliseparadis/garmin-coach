@@ -10,18 +10,27 @@ ATL_DAYS = 7
 ACWR_ACUTE_DAYS = 7
 ACWR_CHRONIC_DAYS = 28
 
-# Banister TRIMP, female coefficients (Morton et al.).
+# Banister TRIMP, sex-specific coefficients (Morton et al.). Which pair is used is
+# controlled by the TRIMP_SEX env var ("female" or "male") -- see .env.example.
 TRIMP_FEMALE_A = 0.86
 TRIMP_FEMALE_B = 1.67
+TRIMP_MALE_A = 0.64
+TRIMP_MALE_B = 1.92
 
 
-def trimp(duration_min: float, avg_hr: float, hr_rest: float, hr_max: float) -> float:
-    """HR-reserve-based training impulse, used as a cross-activity-type load proxy."""
+def trimp(duration_min: float, avg_hr: float, hr_rest: float, hr_max: float, sex: str = "female") -> float:
+    """HR-reserve-based training impulse, used as a cross-activity-type load proxy.
+
+    `sex` selects the Morton et al. coefficient pair ("female" or "male") -- these
+    aren't interchangeable, a mismatched pair will systematically skew TRIMP and
+    therefore ACWR. Callers should pass the TRIMP_SEX env var, not hardcode this.
+    """
     if not all([duration_min, avg_hr, hr_rest, hr_max]) or hr_max <= hr_rest:
         return 0.0
     hrr = (avg_hr - hr_rest) / (hr_max - hr_rest)
     hrr = max(0.0, min(1.0, hrr))
-    return duration_min * hrr * TRIMP_FEMALE_A * math.exp(TRIMP_FEMALE_B * hrr)
+    a, b = (TRIMP_MALE_A, TRIMP_MALE_B) if sex == "male" else (TRIMP_FEMALE_A, TRIMP_FEMALE_B)
+    return duration_min * hrr * a * math.exp(b * hrr)
 
 
 def ewma_series(daily_values: dict, time_constant_days: int, start: date, end: date) -> dict:

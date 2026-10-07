@@ -30,6 +30,8 @@ HRV_LOOKBACK_DAYS = 120  # one-time deep backfill so a 30-day rolling avg has hi
 
 EBIKE_TYPE_KEYS = {"cycling_e_bike", "road_biking_e_bike", "mountain_biking_e_bike", "gravel_cycling_e_bike"}
 
+TRIMP_SEX = os.environ.get("TRIMP_SEX", "female").strip().lower()
+
 
 def login():
     tokens_dir = os.environ["GARMIN_TOKENS_DIR"]
@@ -89,7 +91,7 @@ def sync_activities(client, conn, since: date):
             rhr = rhr_for_date(client, cache_rhr, start_dt.date())
             hr_max_est = get_current_hr_max(conn, a.get("maxHR"))
             duration_min = (a.get("duration") or 0) / 60.0
-            trimp_load = trimp(duration_min, a.get("averageHR"), rhr, hr_max_est)
+            trimp_load = trimp(duration_min, a.get("averageHR"), rhr, hr_max_est, sex=TRIMP_SEX)
 
             conn.execute(
                 """INSERT INTO activities (
