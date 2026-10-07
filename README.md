@@ -5,6 +5,9 @@ lifting) into a coached training plan — TSS, CTL/ATL/TSB, ACWR injury-risk
 tracking, RPE/pain check-ins, and weekly reviews grounded in your own training
 history, not generic advice.
 
+Tired of constantly getting injured? Need to monitor your training load more
+closely after an injury? This might be the right skill for you.
+
 See [`SKILL.md`](SKILL.md) for the full behavior spec (what Claude does and
 when), and [`references/calculations.md`](references/calculations.md) for the
 training-load math.
