@@ -82,7 +82,24 @@ If you skip this step, everything else still works — you just won't get
 lifting-log ingestion or journal-derived context (e.g. an injury mentioned in
 prose before it shows up as a training-load change).
 
-### 4. Start using it
+### 4. Tell Claude your goals
+
+Goals aren't set up through a config file either — just tell Claude about them
+in your first conversation, the same way as the journal link. Worth
+mentioning:
+
+- **Events you're training for** — a race, a ride, a target date
+- **Known injury patterns** — anything that's flared up before, what triggers
+  it (e.g. climbing, a specific lift, high RPE), and what's helped
+- **Process goals** — things like balancing weekday/weekend load, or a
+  specific weakness you want to build
+
+Claude logs these with `coach.py goal-add` and brings them up again whenever
+they're relevant to a plan or a check-in (see the "Goals" section of
+`SKILL.md`). You can add, update, or retire goals at any point later too —
+they don't have to all come out in the first conversation.
+
+### 5. Start using it
 
 Point Claude Code at this folder as a skill, then just talk to it:
 
